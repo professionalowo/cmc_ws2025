@@ -28,7 +28,14 @@ expr:
     | expr PLUS expr    { $$ = $1 + $3; }
     | expr MINUS expr   { $$ = $1 - $3; }
     | expr TIMES expr   { $$ = $1 * $3; }
-    | expr DIVIDE expr  { $$ = $1 / $3; }
+    | expr DIVIDE expr  { 
+        if ($3 == 0) {
+            yyerror("Division by zero");
+            $$ = 0;
+        } else {
+            $$ = $1 / $3;
+        }
+    }
     | LPAREN expr RPAREN { $$ = $2; }
     ;
 

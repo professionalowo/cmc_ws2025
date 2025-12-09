@@ -1,10 +1,11 @@
 %{
+#include <stdlib.h>
 #include "parser.tab.h"
 %}
 
 %%
 
-[0-9]+      { return NUMBER; }
+[0-9]+      { yylval = atoi(yytext); return NUMBER; }
 "+"         { return PLUS; }
 "-"         { return MINUS; }
 "*"         { return TIMES; }
