@@ -1,6 +1,7 @@
 %{
 #include <stdlib.h>
 #include "parser.tab.h"
+#include "roman.h"
 %}
 
 %option noinput nounput noyywrap

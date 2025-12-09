@@ -19,9 +19,11 @@ MAIN = main.c
 LEXER_C = lex.yy.c
 PARSER_C = parser.tab.c
 PARSER_H = parser.tab.h
+ROMAN_C = roman.c
+ROMAN_H = roman.h
 
 # Object files
-OBJS = lex.yy.o parser.tab.o main.o
+OBJS = lex.yy.o parser.tab.o main.o roman.o
 
 # Default target
 all: $(TARGET)
@@ -45,6 +47,9 @@ lex.yy.o: $(LEXER_C) $(PARSER_H)
 # Compile parser
 parser.tab.o: $(PARSER_C)
 	$(CC) $(CFLAGS) -c $(PARSER_C)
+
+roman.o: $(ROMAN_C) $(ROMAN_H)
+	$(CC) $(CFLAGS) -c $(ROMAN_C)
 
 # Compile main
 main.o: $(MAIN) $(PARSER_H)
