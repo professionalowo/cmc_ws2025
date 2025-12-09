@@ -2,45 +2,42 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+extern int yylineno;
+
 int yylex(void);
 void yyerror(const char *s);
 %}
 
-%token NUMBER
-%token PLUS MINUS TIMES DIVIDE
-%token LPAREN RPAREN
-%token NEWLINE
 
+%define parse.error verbose
+
+%union {
+	int num;
+}
+
+%token <num> number
+
+%type <num> EXPR START
+
+%left '+' '-'
+%left '/' '*'
+
+%start START
 %%
 
-input:
-    /* empty */
-    | input line
-    ;
+START: EXPR ';'		{ printf("Result: %d\n",$1); }
 
-line:
-    NEWLINE
-    | expr NEWLINE { printf("Result: %d\n", $1); }
-    ;
-
-expr:
-    NUMBER              { $$ = $1; }
-    | expr PLUS expr    { $$ = $1 + $3; }
-    | expr MINUS expr   { $$ = $1 - $3; }
-    | expr TIMES expr   { $$ = $1 * $3; }
-    | expr DIVIDE expr  { 
-        if ($3 == 0) {
-            yyerror("Division by zero");
-            $$ = 0;
-        } else {
-            $$ = $1 / $3;
-        }
-    }
-    | LPAREN expr RPAREN { $$ = $2; }
+EXPR:
+    number            { $$ = $1; }
+    | EXPR '+' EXPR   { $$ = $1 + $3; }
+    | EXPR '-' EXPR   { $$ = $1 - $3; }
+    | EXPR '*' EXPR   { $$ = $1 * $3; }
+    | EXPR '/' EXPR   { $$ = $1 / $3; }
+    | '(' EXPR ')' { $$ = $2; }
     ;
 
 %%
 
 void yyerror(const char *s) {
-    fprintf(stderr, "Error: %s\n", s);
+    fprintf(stderr, "Error in %d: %s\n",yylineno, s);
 }

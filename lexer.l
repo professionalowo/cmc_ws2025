@@ -3,21 +3,14 @@
 #include "parser.tab.h"
 %}
 
-%%
+%option noinput nounput noyywrap
 
-[0-9]+      { yylval = atoi(yytext); return NUMBER; }
-"+"         { return PLUS; }
-"-"         { return MINUS; }
-"*"         { return TIMES; }
-"/"         { return DIVIDE; }
-"("         { return LPAREN; }
-")"         { return RPAREN; }
-\n          { return NEWLINE; }
-[ \t]       { /* ignore whitespace */ }
-.           { /* ignore other characters */ }
+DEC (0|[1-9][0-9]*)
 
 %%
 
-int yywrap(void) {
-    return 1;
-}
+{DEC}      		{ yylval.num = atoi(yytext); return number; }
+(\ |\n)
+.     			{ return *yytext; }
+%%
+
